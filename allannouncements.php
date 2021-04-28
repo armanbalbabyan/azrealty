@@ -8,11 +8,7 @@
 	<title>A-Z Real Estate</title>
 </head>
 <body>
-
-<div class="container">
-	<!-- <div class="row"> -->
-
-	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
 		<div class="container">
 			<!-- Brand and toggle get grouped for better mobile display -->
 			<div class="navbar-header">
@@ -37,23 +33,6 @@
 							<li><button class="btn btn-link" onclick="()=>this.form.submit('ORDER BY `location` DESC')">Location &#8593;</button></li>
 						</ul>
 					</li>
-				</ul>
-				
-				<ul class="nav navbar-nav navbar-right">
-					<li>
-					<?php
-						session_start();
-
-						if (isset($_SESSION["id"])){
-							echo "<form action='index.php' method='post'> <input type='submit' name='logout' value='&#xe163;' class='glyphicon'> </form>";
-						}
-
-						else
-						{
-							echo "<form action='signin.php'> <button type='submit'>Sign In</button></form>";
-						}
-					?>
-					</li>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Filter by type <b class="caret"></b></a>
 						<ul class="dropdown-menu">
@@ -62,28 +41,45 @@
 						</ul>
 					</li>
 				</ul>
+				
+				<ul class="nav navbar-nav navbar-right">
+					<li>
+					<?php
+						session_start();
 
-				<form class="navbar-form" role="search">
-					<div class="input-group">
-						<input type="text" class="form-control" placeholder="Search">
-						<span class="input-group-btn">
-							<button type="reset" class="btn btn-default">
-								<span class="glyphicon glyphicon-remove">
-									<span class="sr-only">Close</span>
-								</span>
-							</button>
-							<button type="submit" class="btn btn-default">
-								<span class="glyphicon glyphicon-search">
-									<span class="sr-only">Search</span>
-								</span>
-							</button>
-						</span>
-					</div>
-				</form>
+						if (isset($_SESSION["id"])){
+							?>
+								
+								<ul class="nav navbar-nav ml-auto">
+									<li class="nav-item">
+										<a class="nav-link" href="index.php"><span class="fas fa-user"></span> Logout</a>
+									</li>
+								</ul>
+								
+							<?php
+							echo "";
+						}
+
+						else
+						{
+							?>
+								
+								<ul class="nav navbar-nav ml-auto">
+									<a class="nav-link" href="index.php"><span class="fas fa-sign-in-alt"></span> Login</a>
+								</ul>
+								
+							<?php
+						}
+					?>
+					</li>
+
+				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- /.container-fluid -->
-	</nav>	
-	<!-- </div> -->
+	</nav>
+
+<div class="container main">
+
 <?php
 $host = "localhost";
 $user = "root";
@@ -120,6 +116,13 @@ else
 $NO = 1;
 
 $query = $conn->query($all_announcements);
+$images = [
+	'https://images.unsplash.com/photo-1593696140826-c58b021acf8b?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2250&q=80',
+	'https://images.unsplash.com/photo-1558036117-15d82a90b9b1?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2250&q=80',
+	'https://images.unsplash.com/photo-1560184897-ae75f418493e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2250&q=80',
+	'https://images.unsplash.com/photo-1592595896551-12b371d546d5?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2250&q=80',
+	'https://images.unsplash.com/photo-1599809275671-b5942cabc7a2?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2250&q=80'
+];
 
 if (mysqli_num_rows($query)==0)
 
@@ -143,7 +146,7 @@ if (mysqli_num_rows($query)==0)
 	?>
 		<div name = 'announcement' class="item  col-xs-4 col-lg-4">
 			<div class="thumbnail">
-				<img class="group list-group-image" src="http://placehold.it/400x250/000/fff" alt="" />
+				<img class="group list-group-image" src="<?php echo $images[$NO];?>" alt="" />
 				<h3 class="group inner lead text-center"><?php echo $title ?> for <?php echo $for; ?> </h3>
 				<p  class="group inner list-group-item-heading"><b>Price:</b> $<?php echo $price ?></p>
 				<p  class="group inner list-group-item-text"><b>Location:</b> <?php echo $location ?></p>
@@ -159,42 +162,5 @@ if (mysqli_num_rows($query)==0)
 	?>
 	<div>
 </div>
-<script>
-    $(function () {
-        // Remove Search if user Resets Form or hits Escape!
-		$('body, .navbar-collapse form[role="search"] button[type="reset"]').on('click keyup', function(event) {
-			console.log(event.currentTarget);
-			if (event.which == 27 && $('.navbar-collapse form[role="search"]').hasClass('active') ||
-				$(event.currentTarget).attr('type') == 'reset') {
-				closeSearch();
-			}
-		});
-
-		function closeSearch() {
-            var $form = $('.navbar-collapse form[role="search"].active')
-    		$form.find('input').val('');
-			$form.removeClass('active');
-		}
-
-		// Show Search if form is not active // event.preventDefault() is important, this prevents the form from submitting
-		$(document).on('click', '.navbar-collapse form[role="search"]:not(.active) button[type="submit"]', function(event) {
-			event.preventDefault();
-			var $form = $(this).closest('form'),
-				$input = $form.find('input');
-			$form.addClass('active');
-			$input.focus();
-
-		});
-		// ONLY FOR DEMO // Please use $('form').submit(function(event)) to track from submission
-		// if your form is ajax remember to call `closeSearch()` to close the search container
-		$(document).on('click', '.navbar-collapse form[role="search"].active button[type="submit"]', function(event) {
-			event.preventDefault();
-			var $form = $(this).closest('form'),
-				$input = $form.find('input');
-			$('#showSearchTerm').text($input.val());
-            closeSearch()
-		});
-    });
-</script>
 </body>
 </html>
